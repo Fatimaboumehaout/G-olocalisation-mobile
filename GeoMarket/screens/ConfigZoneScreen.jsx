@@ -12,7 +12,7 @@ import useLocation from '../hooks/useLocation';
 import { filtrerParRayon } from '../data/annonces';
 
 export default function ConfigZoneScreen({ navigation }){
-  const [rayon, setrayon] = useState(5);
+  const [rayon, setRayon] = useState(5);
   // Récupération de cityName depuis hook
   const { location,cityName,error, loading, demanderPermission }= useLocation();
 
