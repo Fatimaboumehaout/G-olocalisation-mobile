@@ -1,27 +1,32 @@
 import React, { useState } from 'react';
 import {
-    View,
+  View,
   Text,
   StyleSheet,
   TouchableOpacity,
   ActivityIndicator,
-  Linking, // Pour rediriger vers les paramètres du téléphone
+  Linking,
+  TextInput,
 } from 'react-native';
 import Slider from '@react-native-community/slider';
+// Importation des icônes gratuites fournies par Expo
+import { Feather } from '@expo/vector-icons'; 
 import useLocation from '../hooks/useLocation';
 import { filtrerParRayon } from '../data/annonces';
 
 export default function ConfigZoneScreen({ navigation }){
   const [rayon, setRayon] = useState(5);
-  // Récupération de cityName depuis hook
-  const { location,cityName,error, loading, demanderPermission }= useLocation();
+  const [prenom, setPrenom] = useState('');
+  const { location, cityName, error, loading, demanderPermission } = useLocation();
 
-  //Redirection vers les paramètres du système si la permission est refusée
   function ouvrirParametres(){
     Linking.openSettings();
   }
 
-  //cas 1 : chargement en cours 
+  // Calcul dynamique du nombre d'annonces dans le rayon sélectionné (Style Leboncoin)
+  const annoncesFiltrees = location ? filtrerParRayon(location, rayon) : [];
+  const nombreAnnonces = annoncesFiltrees.length;
+
   if (loading){
     return (
       <View style={styles.centré}>
@@ -31,13 +36,11 @@ export default function ConfigZoneScreen({ navigation }){
     );
   }
 
-  // cas 2 : Erreur de permission ou GPS désactivé
   if(error || !location){
     return(
       <View style={styles.centré}>
         <Text style={styles.iconeErreur}>📍</Text>
         <Text style={styles.texteErreur}>{error || "Position indisponible"}</Text>
-        
         <TouchableOpacity style={styles.bouton} onPress={demanderPermission}>
           <Text style={styles.texteBouton}>Réessayer la connexion</Text>
         </TouchableOpacity>
@@ -48,19 +51,47 @@ export default function ConfigZoneScreen({ navigation }){
     );
   }
 
-  // cas 3 : Succès, on peut rechercher
   function handleRechercher(){
-    const annonces = filtrerParRayon(location,rayon);
-    navigation.navigate('Map',{
-      useLocation: location,
-      rayonKm:rayon,
-      annonces:annonces,
+    navigation.navigate('Map', {
+      userLocation: location,
+      rayonKm: rayon,
+      annonces: annoncesFiltrees,
+      buyerName: prenom || 'Acheteur',
     });
   }
+
   return(
     <View style={styles.container}>
-      <Text style={styles.titre}>Autour de moi</Text>
-      {/* Carte Position Actuelle Améliorée */}
+      
+      {/* 🚀 EN-TÊTE AVEC ICÔNE VECTORIELLE TEMPORAIRE */}
+      <View style={styles.enTete}>
+        <View style={styles.logoConteneur}>
+          <Feather name="compass" size={32} color="#ffffff" />
+        </View>
+        <View>
+          <Text style={styles.appNom}>GeoMarket</Text>
+          <Text style={styles.appSlogan}>Vos voisins ont des trésors</Text>
+        </View>
+      </View>
+
+      {/* 👤 FORMULAIRE DE BIENVENUE */}
+      <View style={styles.carteFormulaire}>
+        <Text style={styles.label}>Qui cherche aujourd'hui ?</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Entrez votre prénom..."
+          placeholderTextColor="#A09E96"
+          value={prenom}
+          onChangeText={setPrenom}
+        />
+        {prenom.length > 0 && (
+          <Text style={styles.messageBienvenue}>
+            Ravi de vous voir, <Text style={styles.prenomHighlight}>{prenom}</Text> ! 👋
+          </Text>
+        )}
+      </View>
+
+      {/* 📍 MA POSITION ACTUELLE */}
       <View style={styles.cartePosition}>
         <Text style={styles.label}>Ma position actuelle</Text>
         <Text style={styles.villeTexte}>📍 {cityName}</Text>
@@ -68,7 +99,8 @@ export default function ConfigZoneScreen({ navigation }){
           {location?.latitude?.toFixed(4)}, {location?.longitude?.toFixed(4)}
         </Text>
       </View>
-      {/* Carte Sélection du Rayon */}
+
+      {/* 🎚️ CONFIGURATION DU RAYON */}
       <View style={styles.carteRayon}>
         <Text style={styles.label}>Rayon de recherche</Text>
         <Text style={styles.rayonTexte}>{rayon} km autour de moi</Text>
@@ -89,10 +121,37 @@ export default function ConfigZoneScreen({ navigation }){
           <Text style={styles.sliderLimit}>1 km</Text>
           <Text style={styles.sliderLimit}>20 km</Text>
         </View>
+
+        {/* 🚶‍♂️ BOUTONS RACCOURCIS (Chips style Airbnb/Vinted) */}
+        <View style={styles.chipsConteneur}>
+          <TouchableOpacity 
+            style={[styles.chip, rayon === 2 && styles.activeChip]} 
+            onPress={() => setRayon(2)}
+          >
+            <Text style={[styles.chipTexte, rayon === 2 && styles.activeChipTexte]}>🚶‍♂️ 2 km</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            style={[styles.chip, rayon === 5 && styles.activeChip]} 
+            onPress={() => setRayon(5)}
+          >
+            <Text style={[styles.chipTexte, rayon === 5 && styles.activeChipTexte]}>🚲 5 km</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            style={[styles.chip, rayon === 15 && styles.activeChip]} 
+            onPress={() => setRayon(15)}
+          >
+            <Text style={[styles.chipTexte, rayon === 15 && styles.activeChipTexte]}>🚗 15 km</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-      {/* Bouton de recherche */}
+
+      {/* 🔍 BOUTON DE RECHERCHE DYNAMIQUE (Style Leboncoin) */}
       <TouchableOpacity style={styles.bouton} onPress={handleRechercher}>
-        <Text style={styles.texteBouton}>Rechercher les annonces</Text>
+        <Text style={styles.texteBouton}>
+          Voir les {nombreAnnonces} annonce{nombreAnnonces > 1 ? 's' : ''}
+        </Text>
       </TouchableOpacity>
     </View>
   );
@@ -101,7 +160,7 @@ export default function ConfigZoneScreen({ navigation }){
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F7F6F0', // Fond légèrement gris-beige crème
+    backgroundColor: '#F7F6F0',
     padding: 24,
     justifyContent: 'center',
   },
@@ -112,18 +171,73 @@ const styles = StyleSheet.create({
     padding: 24,
     backgroundColor: '#F7F6F0',
   },
-  titre: {
-    fontSize: 32,
-    fontWeight: '700',
+  enTete: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  logoConteneur: {
+    width: 54,
+    height: 54,
+    borderRadius: 14,
+    backgroundColor: '#534AB7',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 16,
+    elevation: 3,
+    shadowColor: '#534AB7',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+  },
+  appNom: {
+    fontSize: 28,
+    fontWeight: '800',
     color: '#1A1A19',
-    marginBottom: 32,
-    textAlign: 'left',
+  },
+  appSlogan: {
+    fontSize: 14,
+    color: '#8A8880',
+    fontWeight: '500',
+  },
+  carteFormulaire: {
+    backgroundColor: '#ffffff',
+    borderRadius: 16,
+    padding: 18,
+    marginBottom: 16,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 6,
+  },
+  input: {
+    height: 48,
+    borderColor: '#E2DFD8',
+    borderWidth: 1.5,
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    fontSize: 16,
+    color: '#1A1A19',
+    backgroundColor: '#FAF9F6',
+    marginTop: 8,
+    fontWeight: '500',
+  },
+  messageBienvenue: {
+    marginTop: 10,
+    fontSize: 14,
+    color: '#8A8880',
+    fontWeight: '500',
+  },
+  prenomHighlight: {
+    color: '#534AB7',
+    fontWeight: '700',
   },
   cartePosition: {
     backgroundColor: '#ffffff',
     borderRadius: 16,
-    padding: 20,
-    marginBottom: 20,
+    padding: 18,
+    marginBottom: 16,
     elevation: 2,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -133,8 +247,8 @@ const styles = StyleSheet.create({
   carteRayon: {
     backgroundColor: '#ffffff',
     borderRadius: 16,
-    padding: 20,
-    marginBottom: 32,
+    padding: 18,
+    marginBottom: 24,
     elevation: 2,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -142,29 +256,29 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
   },
   label: {
-    fontSize: 12,
-    fontWeight: '600',
+    fontSize: 11,
+    fontWeight: '700',
     color: '#A09E96',
     textTransform: 'uppercase',
     letterSpacing: 0.8,
-    marginBottom: 8,
   },
   villeTexte: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: '700',
     color: '#1A1A19',
-    marginBottom: 4,
+    marginTop: 6,
+    marginBottom: 2,
   },
   coordonnees: {
-    fontSize: 14,
+    fontSize: 13,
     color: '#8A8880',
-    fontFamily: 'System',
   },
   rayonTexte: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: '700',
-    color: '#534AB7', // Couleur violet principal
-    marginBottom: 16,
+    color: '#534AB7',
+    marginTop: 6,
+    marginBottom: 8,
   },
   slider: {
     width: '100%',
@@ -174,11 +288,39 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 4,
+    marginBottom: 12,
   },
   sliderLimit: {
     fontSize: 12,
     color: '#8A8880',
     fontWeight: '500',
+  },
+  chipsConteneur: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 8,
+  },
+  chip: {
+    flex: 1,
+    backgroundColor: '#FAF9F6',
+    borderWidth: 1,
+    borderColor: '#E2DFD8',
+    borderRadius: 10,
+    paddingVertical: 10,
+    marginHorizontal: 4,
+    alignItems: 'center',
+  },
+  activeChip: {
+    backgroundColor: '#534AB7',
+    borderColor: '#534AB7',
+  },
+  chipTexte: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#2C2C2A',
+  },
+  activeChipTexte: {
+    color: '#ffffff',
   },
   texteGris: {
     marginTop: 16,
