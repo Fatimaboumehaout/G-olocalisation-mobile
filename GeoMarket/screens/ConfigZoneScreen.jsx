@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Image } from 'react-native';
 import {
   View,
   Text,
@@ -63,18 +64,18 @@ export default function ConfigZoneScreen({ navigation }){
   return(
     <View style={styles.container}>
       
-      {/* 🚀 EN-TÊTE AVEC ICÔNE VECTORIELLE TEMPORAIRE */}
+      {/*  EN-TÊTE AVEC ICÔNE VECTORIELLE  */}
       <View style={styles.enTete}>
-        <View style={styles.logoConteneur}>
-          <Feather name="compass" size={32} color="#ffffff" />
-        </View>
-        <View>
-          <Text style={styles.appNom}>GeoMarket</Text>
-          <Text style={styles.appSlogan}>Vos voisins ont des trésors</Text>
-        </View>
+      <View style={styles.logoConteneur}>
+        <Image source={require('../assets/icon.png')} style={styles.logoImage} />
       </View>
+      <View style={styles.texteConteneur}>
+        <Text style={styles.appNom}>GeoMarket</Text>
+        <Text style={styles.appSlogan}>Vos voisins ont des trésors</Text>
+      </View>
+    </View>
 
-      {/* 👤 FORMULAIRE DE BIENVENUE */}
+      {/*  FORMULAIRE DE BIENVENUE */}
       <View style={styles.carteFormulaire}>
         <Text style={styles.label}>Qui cherche aujourd'hui ?</Text>
         <TextInput
@@ -100,7 +101,7 @@ export default function ConfigZoneScreen({ navigation }){
         </Text>
       </View>
 
-      {/* 🎚️ CONFIGURATION DU RAYON */}
+      {/*  CONFIGURATION DU RAYON */}
       <View style={styles.carteRayon}>
         <Text style={styles.label}>Rayon de recherche</Text>
         <Text style={styles.rayonTexte}>{rayon} km autour de moi</Text>
@@ -122,7 +123,7 @@ export default function ConfigZoneScreen({ navigation }){
           <Text style={styles.sliderLimit}>20 km</Text>
         </View>
 
-        {/* 🚶‍♂️ BOUTONS RACCOURCIS (Chips style Airbnb/Vinted) */}
+        {/* BOUTONS RACCOURCIS (Chips style Airbnb/Vinted) */}
         <View style={styles.chipsConteneur}>
           <TouchableOpacity 
             style={[styles.chip, rayon === 2 && styles.activeChip]} 
@@ -147,8 +148,19 @@ export default function ConfigZoneScreen({ navigation }){
         </View>
       </View>
 
-      {/* 🔍 BOUTON DE RECHERCHE DYNAMIQUE (Style Leboncoin) */}
-      <TouchableOpacity style={styles.bouton} onPress={handleRechercher}>
+      {/* BOUTON DE RECHERCHE DYNAMIQUE */}
+      <TouchableOpacity
+        style={styles.bouton}
+        activeOpacity={0.85}
+        onPress={handleRechercher}
+      >
+        <Feather
+          name="search"
+          size={18}
+          color="#FFFFFF"
+          style={{ marginRight: 8 }}
+        />
+
         <Text style={styles.texteBouton}>
           Voir les {nombreAnnonces} annonce{nombreAnnonces > 1 ? 's' : ''}
         </Text>
@@ -160,178 +172,279 @@ export default function ConfigZoneScreen({ navigation }){
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F7F6F0',
+    backgroundColor: '#F4F4F8',
     padding: 24,
     justifyContent: 'center',
   },
+
   centré: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 24,
-    backgroundColor: '#F7F6F0',
+    backgroundColor: '#F4F4F8',
   },
+
   enTete: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 24,
+    backgroundColor: '#FFFFFF',
+    padding: 18,
+    borderRadius: 20,
+    marginBottom: 22,
+
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+    elevation: 3,
   },
+
   logoConteneur: {
-    width: 54,
-    height: 54,
-    borderRadius: 14,
+    width: 64,
+    height: 64,
+    borderRadius: 18,
     backgroundColor: '#534AB7',
+
     alignItems: 'center',
     justifyContent: 'center',
+
     marginRight: 16,
-    elevation: 3,
+
     shadowColor: '#534AB7',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.2,
-    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.25,
+    shadowRadius: 10,
+    elevation: 5,
   },
+
+  logoImage: {
+    width: 46,
+    height: 46,
+    resizeMode: 'contain',
+  },
+
+  texteConteneur: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+
   appNom: {
-    fontSize: 28,
+    fontSize: 30,
     fontWeight: '800',
     color: '#1A1A19',
   },
+
   appSlogan: {
-    fontSize: 14,
+    fontSize: 13,
     color: '#8A8880',
-    fontWeight: '500',
+    marginTop: 2,
+    letterSpacing: 0.2,
   },
+
   carteFormulaire: {
-    backgroundColor: '#ffffff',
-    borderRadius: 16,
-    padding: 18,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 18,
+    padding: 22,
     marginBottom: 16,
-    elevation: 2,
+
+    borderWidth: 1,
+    borderColor: '#F0EEF9',
+
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
-    shadowRadius: 6,
+    shadowRadius: 8,
+
+    elevation: 2,
   },
+
+  cartePosition: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 18,
+    padding: 22,
+    marginBottom: 16,
+
+    borderWidth: 1,
+    borderColor: '#F0EEF9',
+
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+
+    elevation: 2,
+  },
+
+  carteRayon: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 18,
+    padding: 22,
+    marginBottom: 24,
+
+    borderWidth: 1,
+    borderColor: '#F0EEF9',
+
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+
+    elevation: 2,
+  },
+
+  label: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#534AB7',
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+  },
+
   input: {
-    height: 48,
-    borderColor: '#E2DFD8',
+    height: 52,
+    borderRadius: 14,
     borderWidth: 1.5,
-    borderRadius: 12,
+    borderColor: '#ECE9FF',
+    backgroundColor: '#FAFAFD',
     paddingHorizontal: 16,
-    fontSize: 16,
-    color: '#1A1A19',
-    backgroundColor: '#FAF9F6',
-    marginTop: 8,
-    fontWeight: '500',
-  },
-  messageBienvenue: {
     marginTop: 10,
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#1A1A19',
+  },
+
+  messageBienvenue: {
+    marginTop: 12,
     fontSize: 14,
     color: '#8A8880',
     fontWeight: '500',
   },
+
   prenomHighlight: {
     color: '#534AB7',
     fontWeight: '700',
   },
-  cartePosition: {
-    backgroundColor: '#ffffff',
-    borderRadius: 16,
-    padding: 18,
-    marginBottom: 16,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 6,
-  },
-  carteRayon: {
-    backgroundColor: '#ffffff',
-    borderRadius: 16,
-    padding: 18,
-    marginBottom: 24,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 6,
-  },
-  label: {
-    fontSize: 11,
-    fontWeight: '700',
-    color: '#A09E96',
-    textTransform: 'uppercase',
-    letterSpacing: 0.8,
-  },
+
   villeTexte: {
-    fontSize: 20,
+    fontSize: 21,
     fontWeight: '700',
     color: '#1A1A19',
-    marginTop: 6,
-    marginBottom: 2,
+    marginTop: 8,
   },
+
   coordonnees: {
+    marginTop: 4,
     fontSize: 13,
     color: '#8A8880',
   },
+
   rayonTexte: {
-    fontSize: 20,
-    fontWeight: '700',
+    fontSize: 22,
+    fontWeight: '800',
     color: '#534AB7',
-    marginTop: 6,
-    marginBottom: 8,
+    marginTop: 8,
+    marginBottom: 10,
   },
+
   slider: {
     width: '100%',
     height: 40,
   },
+
   sliderLabels: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingHorizontal: 4,
-    marginBottom: 12,
+    marginBottom: 14,
+    paddingHorizontal: 2,
   },
+
   sliderLimit: {
     fontSize: 12,
     color: '#8A8880',
     fontWeight: '500',
   },
+
   chipsConteneur: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: 8,
   },
+
   chip: {
     flex: 1,
-    backgroundColor: '#FAF9F6',
+    backgroundColor: '#FAFAFD',
+
     borderWidth: 1,
-    borderColor: '#E2DFD8',
-    borderRadius: 10,
-    paddingVertical: 10,
+    borderColor: '#ECE9FF',
+
+    borderRadius: 14,
+
+    paddingVertical: 12,
+
     marginHorizontal: 4,
+
     alignItems: 'center',
   },
+
   activeChip: {
     backgroundColor: '#534AB7',
     borderColor: '#534AB7',
+
+    shadowColor: '#534AB7',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    elevation: 3,
   },
+
   chipTexte: {
     fontSize: 12,
     fontWeight: '600',
     color: '#2C2C2A',
   },
+
   activeChipTexte: {
-    color: '#ffffff',
+    color: '#FFFFFF',
   },
+
+  bouton: {
+    backgroundColor: '#534AB7',
+
+    borderRadius: 18,
+
+    paddingVertical: 18,
+
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+
+    shadowColor: '#534AB7',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.25,
+    shadowRadius: 12,
+
+    elevation: 6,
+  },
+
+  texteBouton: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '700',
+  },
+
   texteGris: {
     marginTop: 16,
     color: '#8A8880',
     fontSize: 16,
     fontWeight: '500',
   },
+
   iconeErreur: {
     fontSize: 50,
     marginBottom: 16,
   },
+
   texteErreur: {
     color: '#D9383A',
     fontSize: 16,
@@ -340,26 +453,12 @@ const styles = StyleSheet.create({
     marginBottom: 24,
     lineHeight: 22,
   },
-  bouton: {
-    backgroundColor: '#534AB7',
-    borderRadius: 16,
-    padding: 18,
-    alignItems: 'center',
-    elevation: 3,
-    shadowColor: '#534AB7',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-  },
-  texteBouton: {
-    color: '#ffffff',
-    fontSize: 16,
-    fontWeight: '600',
-  },
+
   boutonLien: {
     marginTop: 16,
     padding: 12,
   },
+
   texteBoutonLien: {
     color: '#534AB7',
     fontSize: 14,
