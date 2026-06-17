@@ -8,6 +8,7 @@
     "userInterfaceStyle": "light",
     "ios": {
       "supportsTablet": true,
+      "icon": "./assets/icon copy.png",
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "GeoMarket utilise votre position pour afficher les annonces près de vous.",
         "NSLocationAlwaysUsageDescription": "GeoMarket utilise votre position pour afficher les annonces près de vous."
