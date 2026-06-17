@@ -3,6 +3,10 @@
 **Vos voisins ont des trésors**
  
 GeoMarket est une application mobile de petites annonces géolocalisées, développée avec React Native et Expo. Inspirée d'applications comme Wallapop, Leboncoin ou Vinted, elle permet à l'utilisateur de découvrir les annonces disponibles autour de sa position actuelle, dans un rayon qu'il définit lui-même.
+
+## Démonstration vidéo
+
+[![GeoMarket Demo](https://img.youtube.com/vi/lNLT5rSNvlQ/maxresdefault.jpg)](https://www.youtube.com/watch?v=lNLT5rSNvlQ)
  
 ## Fonctionnalités
  
